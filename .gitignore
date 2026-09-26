@@ -1,0 +1,12 @@
+.DS_Store
+.idea/
+.vscode/
+*.log
+.env
+vendor/
+mobile/.dart_tool/
+mobile/.flutter-plugins*
+mobile/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+
