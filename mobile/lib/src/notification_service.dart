@@ -8,12 +8,22 @@ class NotificationService {
 
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
-    final localZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(localZone.identifier));
+    try {
+      final localZone = await FlutterTimezone.getLocalTimezone()
+          .timeout(const Duration(seconds: 4));
+      tz.setLocalLocation(tz.getLocation(localZone.identifier));
+    } catch (_) {
+      tz.setLocalLocation(tz.UTC);
+    }
     const settings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     );
-    await _plugin.initialize(settings: settings);
+    try {
+      await _plugin.initialize(settings: settings)
+          .timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // Reminders are optional; the offline counter must still be usable.
+    }
   }
 
   Future<bool> requestPermission() async {

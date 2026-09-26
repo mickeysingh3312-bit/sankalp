@@ -80,8 +80,20 @@ class AppController extends ChangeNotifier {
     _prefs = await SharedPreferences.getInstance();
     _loadLocal();
     _rollDateIfNeeded();
-    api.token = await _secure.read(key: _tokenKey);
-    storeReady = await purchases.initialize(_verifyPurchase);
+    try {
+      api.token = await _secure
+          .read(key: _tokenKey)
+          .timeout(const Duration(seconds: 5));
+    } catch (_) {
+      api.token = null;
+    }
+    try {
+      storeReady = await purchases
+          .initialize(_verifyPurchase)
+          .timeout(const Duration(seconds: 8));
+    } catch (_) {
+      storeReady = false;
+    }
     if (signedIn) await refreshAccount(silent: true);
     notifyListeners();
   }

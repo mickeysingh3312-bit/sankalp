@@ -1,5 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sankalp_app/main.dart';
+import 'package:sankalp_app/src/app_controller.dart';
 import 'package:sankalp_app/src/models.dart';
+import 'package:sankalp_app/src/notification_service.dart';
+import 'package:sankalp_app/src/purchase_service.dart';
 
 void main() {
   test('daily record completion follows its saved goal', () {
@@ -23,5 +28,17 @@ void main() {
     expect(incomplete.complete, isFalse);
     expect(complete.toJson()['total'], 108);
   });
-}
 
+  testWidgets('main Naam Jap screen renders', (tester) async {
+    final controller = AppController(
+      notifications: NotificationService(),
+      purchases: PurchaseService(),
+    );
+
+    await tester.pumpWidget(SankalpApp(controller: controller));
+
+    expect(find.text('Sankalp'), findsOneWidget);
+    expect(find.text("Choose today's Sankalp"), findsOneWidget);
+    expect(find.byType(Scaffold), findsOneWidget);
+  });
+}

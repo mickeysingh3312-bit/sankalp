@@ -12,6 +12,7 @@ class PurchaseService {
   Future<bool> initialize(
     Future<void> Function(PurchaseDetails purchase) onVerified,
   ) async {
+    await _subscription?.cancel();
     _subscription = _iap.purchaseStream.listen((purchases) async {
       for (final purchase in purchases) {
         if (purchase.status == PurchaseStatus.purchased ||
@@ -22,7 +23,7 @@ class PurchaseService {
           await _iap.completePurchase(purchase);
         }
       }
-    });
+    }, onError: (_) {});
     if (!await _iap.isAvailable()) return false;
     final response = await _iap.queryProductDetails({productId});
     product = response.productDetails.isEmpty ? null : response.productDetails.first;
@@ -39,4 +40,3 @@ class PurchaseService {
 
   Future<void> dispose() async => _subscription?.cancel();
 }
-
