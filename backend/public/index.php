@@ -261,11 +261,7 @@ function updatePremiumUntil(PDO $db, int $userId): void
 
 function handleRtdn(PDO $db, array $input): never
 {
-    $expected = (string) Env::get('GOOGLE_RTDN_SECRET', '');
-    $provided = (string) ($_SERVER['HTTP_X_GOOGLE_RTDN_SECRET'] ?? '');
-    if ($expected === '' || !hash_equals($expected, $provided)) {
-        Response::error('Invalid notification secret.', 401);
-    }
+    verifyGooglePushIdentity();
     $encoded = $input['message']['data'] ?? '';
     $notification = json_decode(base64_decode((string) $encoded, true) ?: '', true);
     $subscription = $notification['subscriptionNotification'] ?? null;
@@ -299,3 +295,73 @@ function handleRtdn(PDO $db, array $input): never
     Response::json(['message' => 'Subscription updated.']);
 }
 
+function verifyGooglePushIdentity(): void
+{
+    $authorization = (string) ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
+    if (!preg_match('/^Bearer\s+([A-Za-z0-9._-]+)$/', $authorization, $matches)) {
+        Response::error('Authenticated Google Pub/Sub push required.', 401);
+    }
+    $parts = explode('.', $matches[1]);
+    if (count($parts) !== 3) {
+        Response::error('Invalid Google identity token.', 401);
+    }
+    $header = json_decode(base64UrlDecode($parts[0]), true);
+    $claims = json_decode(base64UrlDecode($parts[1]), true);
+    $signature = base64UrlDecode($parts[2]);
+    if (!is_array($header) || !is_array($claims) || empty($header['kid'])) {
+        Response::error('Invalid Google identity token.', 401);
+    }
+
+    $cache = sys_get_temp_dir() . '/sankalp-google-certs.json';
+    $certs = null;
+    if (is_file($cache) && filemtime($cache) > time() - 3600) {
+        $certs = json_decode((string) file_get_contents($cache), true);
+    }
+    if (!is_array($certs) || empty($certs[$header['kid']])) {
+        $handle = curl_init('https://www.googleapis.com/oauth2/v1/certs');
+        curl_setopt_array($handle, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+        ]);
+        $raw = curl_exec($handle);
+        $status = (int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
+        curl_close($handle);
+        $certs = json_decode($raw ?: '', true);
+        if ($status !== 200 || !is_array($certs)) {
+            Response::error('Unable to verify Google push identity.', 503);
+        }
+        file_put_contents($cache, json_encode($certs), LOCK_EX);
+    }
+
+    $certificate = $certs[$header['kid']] ?? null;
+    $verified = $certificate && openssl_verify(
+        $parts[0] . '.' . $parts[1],
+        $signature,
+        $certificate,
+        OPENSSL_ALGO_SHA256,
+    ) === 1;
+    $expectedAudience = (string) Env::get('GOOGLE_RTDN_AUDIENCE', '');
+    $expectedEmail = (string) Env::get('GOOGLE_RTDN_SERVICE_ACCOUNT', '');
+    $issuer = (string) ($claims['iss'] ?? '');
+    if (
+        !$verified ||
+        $expectedAudience === '' ||
+        $expectedEmail === '' ||
+        !hash_equals($expectedAudience, (string) ($claims['aud'] ?? '')) ||
+        !hash_equals($expectedEmail, (string) ($claims['email'] ?? '')) ||
+        !in_array($issuer, ['accounts.google.com', 'https://accounts.google.com'], true) ||
+        (int) ($claims['exp'] ?? 0) < time() ||
+        (int) ($claims['iat'] ?? 0) > time() + 60
+    ) {
+        Response::error('Google push identity was not accepted.', 401);
+    }
+}
+
+function base64UrlDecode(string $value): string
+{
+    $padding = (4 - strlen($value) % 4) % 4;
+    return base64_decode(
+        strtr($value, '-_', '+/') . str_repeat('=', $padding),
+        true,
+    ) ?: '';
+}

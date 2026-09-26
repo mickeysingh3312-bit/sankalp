@@ -11,9 +11,14 @@ Env::load(dirname(__DIR__, 2) . '/.env');
 
 $username = $_SERVER['PHP_AUTH_USER'] ?? '';
 $password = $_SERVER['PHP_AUTH_PW'] ?? '';
+$configuredPassword = (string) Env::get('ADMIN_PASSWORD', '');
+if ($configuredPassword === '') {
+    http_response_code(503);
+    exit('Set ADMIN_PASSWORD before using the admin dashboard.');
+}
 if (
     !hash_equals((string) Env::get('ADMIN_USERNAME', 'admin'), $username) ||
-    !hash_equals((string) Env::get('ADMIN_PASSWORD', ''), $password)
+    !hash_equals($configuredPassword, $password)
 ) {
     header('WWW-Authenticate: Basic realm="Sankalp Admin"');
     http_response_code(401);
@@ -84,4 +89,3 @@ $users = $db->query(
     </tbody></table>
   </div>
 </main></body></html>
-
