@@ -10,14 +10,16 @@
    set `GOOGLE_SERVICE_ACCOUNT_JSON` in `backend/.env`.
 6. Set `GOOGLE_PACKAGE_NAME=com.techezer.sankalp` and
    `GOOGLE_SUBSCRIPTION_PRODUCT=sankalp_premium_monthly`.
-7. Configure Real time developer notifications in Play Console. Route the
-   Pub/Sub push subscription to
-   `https://your-api.example.com/api/v1/google/rtdn` and include the
-   `X-Google-RTDN-Secret` header matching `GOOGLE_RTDN_SECRET`.
-8. Add licensed testers and release an Android App Bundle to the internal
+7. Configure Real time developer notifications in Play Console. Create an
+   authenticated Pub/Sub push subscription to
+   `https://your-api.example.com/api/v1/google/rtdn`. Enable OIDC
+   authentication, select a dedicated push service account, and use the same
+   endpoint URL as the audience.
+8. Set `GOOGLE_RTDN_AUDIENCE` to that endpoint URL and set
+   `GOOGLE_RTDN_SERVICE_ACCOUNT` to the dedicated service account email.
+9. Add licensed testers and release an Android App Bundle to the internal
    testing track. Google Play purchases cannot be fully tested from a
    sideloaded debug APK.
 
 The app sends the Google purchase token to the PHP API. Premium activates only
 after the API validates the token against the Google Android Publisher API.
-

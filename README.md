@@ -31,9 +31,9 @@ after sign in, and uses Google Play Billing for the ₹21 monthly Premium plan.
 
 ## Local start
 
-Copy `backend/.env.example` to `backend/.env`, update the MySQL and Google
-Play values, and import `backend/database/schema.sql`. The backend web root is
-`backend/public`.
+Create `backend/.env` using the variables listed in the deployment guide,
+update the MySQL and Google Play values, and import
+`backend/database/schema.sql`. The backend web root is `backend/public`.
 
 For the Android app:
 
@@ -46,4 +46,3 @@ flutter run --dart-define=API_BASE_URL=https://your-api.example.com/api/v1
 
 See [deployment](docs/DEPLOYMENT.md) and
 [Google Play subscription setup](docs/PLAY_STORE.md) for production steps.
-

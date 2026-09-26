@@ -11,13 +11,19 @@
 ## cPanel
 
 1. Point the API subdomain document root to `backend/public`.
-2. Copy `backend/.env.example` to `backend/.env` and fill every production
-   value.
+2. Create `backend/.env` outside the public directory with the database,
+   Google Play and admin variables listed below.
 3. Import `backend/database/schema.sql` in phpMyAdmin.
 4. Store the Google service account JSON outside `public`.
 5. Open `/api/v1/health` and confirm it returns `{"status":"ok"}`.
 6. Open `/admin/` and use the credentials from `ADMIN_USERNAME` and
    `ADMIN_PASSWORD`.
+
+Required variables are `APP_ENV`, `APP_TIMEZONE`, `ALLOWED_ORIGIN`,
+`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`,
+`GOOGLE_PACKAGE_NAME`, `GOOGLE_SUBSCRIPTION_PRODUCT`,
+`GOOGLE_SERVICE_ACCOUNT_JSON`, `GOOGLE_RTDN_AUDIENCE`,
+`GOOGLE_RTDN_SERVICE_ACCOUNT`, `ADMIN_USERNAME` and `ADMIN_PASSWORD`.
 
 ## Flutter build
 
@@ -34,4 +40,3 @@ flutter build appbundle --release --dart-define=API_BASE_URL=https://api.example
 The repository workflow builds a debug APK on each push. Set the repository
 variable `API_BASE_URL` to the deployed API base URL before downloading the
 workflow APK.
-
