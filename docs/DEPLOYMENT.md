@@ -37,6 +37,8 @@ flutter build apk --release --dart-define=API_BASE_URL=https://api.example.com/a
 flutter build appbundle --release --dart-define=API_BASE_URL=https://api.example.com/api/v1
 ```
 
-The repository workflow builds a debug APK on each push. Set the repository
-variable `API_BASE_URL` to the deployed API base URL before downloading the
-workflow APK.
+The repository workflow builds a smaller release-mode test APK on each push.
+It uses Flutter's generated test signing configuration and is intended for
+sideload testing only. Set the repository variable `API_BASE_URL` to the
+deployed API base URL before downloading the workflow APK. Configure a private
+production keystore before creating the Play Store AAB.
