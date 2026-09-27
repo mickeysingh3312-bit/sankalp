@@ -37,6 +37,7 @@ class AppController extends ChangeNotifier {
   int bestStreak = 0;
   String theme = 'auto';
   bool vibrate = true;
+  bool tapSound = true;
   bool reminderEnabled = false;
   int reminderHour = 7;
   int reminderMinute = 0;
@@ -114,8 +115,17 @@ class AppController extends ChangeNotifier {
   }
 
   void selectMantra(String id, {String? custom}) {
+    final nextCustom = custom?.trim();
+    final changed = mantraId != id ||
+        (id == 'custom' && nextCustom != null && nextCustom != customMantra.trim());
     mantraId = id;
-    if (custom != null) customMantra = custom;
+    if (nextCustom != null) customMantra = nextCustom;
+    if (changed) {
+      count = 0;
+      tapCount = 0;
+      malaCount = 0;
+      writeCount = 0;
+    }
     _saveAndNotify();
   }
 
@@ -133,6 +143,11 @@ class AppController extends ChangeNotifier {
 
   void setVibration(bool value) {
     vibrate = value;
+    _saveAndNotify();
+  }
+
+  void setTapSound(bool value) {
+    tapSound = value;
     _saveAndNotify();
   }
 
@@ -214,6 +229,7 @@ class AppController extends ChangeNotifier {
           'goal': goal,
           'theme': theme,
           'vibrate': vibrate,
+          'tap_sound': tapSound,
           'reminder_enabled': reminderEnabled,
           'reminder_hour': reminderHour,
           'reminder_minute': reminderMinute,
@@ -311,6 +327,7 @@ class AppController extends ChangeNotifier {
       bestStreak = (json['best_streak'] as num?)?.toInt() ?? 0;
       theme = json['theme']?.toString() ?? 'auto';
       vibrate = json['vibrate'] as bool? ?? true;
+      tapSound = json['tap_sound'] as bool? ?? true;
       reminderEnabled = json['reminder_enabled'] as bool? ?? false;
       reminderHour = (json['reminder_hour'] as num?)?.toInt() ?? 7;
       reminderMinute = (json['reminder_minute'] as num?)?.toInt() ?? 0;
@@ -342,6 +359,7 @@ class AppController extends ChangeNotifier {
           'best_streak': bestStreak,
           'theme': theme,
           'vibrate': vibrate,
+          'tap_sound': tapSound,
           'reminder_enabled': reminderEnabled,
           'reminder_hour': reminderHour,
           'reminder_minute': reminderMinute,

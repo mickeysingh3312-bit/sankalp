@@ -5,6 +5,7 @@ import 'package:sankalp_app/src/app_controller.dart';
 import 'package:sankalp_app/src/models.dart';
 import 'package:sankalp_app/src/notification_service.dart';
 import 'package:sankalp_app/src/purchase_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   test('daily record completion follows its saved goal', () {
@@ -40,5 +41,27 @@ void main() {
     expect(find.text('Sankalp'), findsOneWidget);
     expect(find.text("Choose today's Sankalp"), findsOneWidget);
     expect(find.byType(Scaffold), findsOneWidget);
+  });
+
+  test('changing the selected Naam resets current counting', () async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = AppController(
+      notifications: NotificationService(),
+      purchases: PurchaseService(),
+    );
+    await controller.initialize();
+
+    controller.increment(JapMode.tap);
+    controller.increment(JapMode.mala);
+    controller.increment(JapMode.write);
+    expect(controller.count, 3);
+
+    controller.selectMantra('om_namah_shivay');
+
+    expect(controller.count, 0);
+    expect(controller.tapCount, 0);
+    expect(controller.malaCount, 0);
+    expect(controller.writeCount, 0);
+    controller.dispose();
   });
 }

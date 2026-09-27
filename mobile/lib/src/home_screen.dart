@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void increment(JapMode selectedMode) {
     controller.increment(selectedMode);
     if (controller.vibrate) HapticFeedback.selectionClick();
+    if (controller.tapSound) SystemSound.play(SystemSoundType.click);
   }
 
   void openPremium() => Navigator.push(
@@ -498,6 +499,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: const Text('Vibration on tap'),
                 value: controller.vibrate,
                 onChanged: controller.setVibration,
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Tap sound'),
+                subtitle: const Text('Play a soft click for each count'),
+                value: controller.tapSound,
+                onChanged: controller.setTapSound,
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
