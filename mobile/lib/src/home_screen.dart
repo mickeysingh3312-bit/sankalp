@@ -9,6 +9,7 @@ import 'account_screen.dart';
 import 'app_controller.dart';
 import 'models.dart';
 import 'premium_screen.dart';
+import 'tap_sound_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.controller});
@@ -20,12 +21,26 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   JapMode mode = JapMode.tap;
+  late final TapSoundService _tapAudio;
   AppController get controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _tapAudio = TapSoundService();
+    if (controller.tapSound) _tapAudio.prepare(controller.tapSoundChoice);
+  }
+
+  @override
+  void dispose() {
+    _tapAudio.dispose();
+    super.dispose();
+  }
 
   void increment(JapMode selectedMode) {
     controller.increment(selectedMode);
     if (controller.vibrate) HapticFeedback.selectionClick();
-    if (controller.tapSound) SystemSound.play(SystemSoundType.click);
+    if (controller.tapSound) _tapAudio.play(controller.tapSoundChoice);
   }
 
   void openPremium() => Navigator.push(
@@ -503,10 +518,33 @@ class _HomeScreenState extends State<HomeScreen> {
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text('Tap sound'),
-                subtitle: const Text('Play a soft click for each count'),
+                subtitle: const Text('Play the selected sound for each count'),
                 value: controller.tapSound,
-                onChanged: controller.setTapSound,
+                onChanged: (value) {
+                  controller.setTapSound(value);
+                  if (value) _tapAudio.prepare(controller.tapSoundChoice);
+                },
               ),
+              if (controller.tapSound)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Count sound'),
+                  trailing: DropdownButton<String>(
+                    value: controller.tapSoundChoice,
+                    items: [
+                      for (final choice in AppController.tapSoundChoices)
+                        DropdownMenuItem(
+                          value: choice,
+                          child: Text(TapSoundService.labels[choice]!),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) return;
+                      controller.setTapSoundChoice(value);
+                      _tapAudio.prepare(value);
+                    },
+                  ),
+                ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text('Theme'),

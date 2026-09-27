@@ -16,6 +16,7 @@ class AppController extends ChangeNotifier {
   AppController({required this.notifications, required this.purchases});
 
   static const freeGoals = [108, 216, 501, 1100];
+  static const tapSoundChoices = ['soft_click', 'wooden_bead', 'temple_bell'];
   static const _storageKey = 'sankalp_state_v1';
   static const _tokenKey = 'api_token';
 
@@ -38,6 +39,7 @@ class AppController extends ChangeNotifier {
   String theme = 'auto';
   bool vibrate = true;
   bool tapSound = true;
+  String tapSoundChoice = 'soft_click';
   bool reminderEnabled = false;
   int reminderHour = 7;
   int reminderMinute = 0;
@@ -151,6 +153,12 @@ class AppController extends ChangeNotifier {
     _saveAndNotify();
   }
 
+  void setTapSoundChoice(String value) {
+    if (!tapSoundChoices.contains(value)) return;
+    tapSoundChoice = value;
+    _saveAndNotify();
+  }
+
   Future<void> setReminder(bool enabled, {int? hour, int? minute}) async {
     reminderEnabled = enabled;
     reminderHour = hour ?? reminderHour;
@@ -230,6 +238,7 @@ class AppController extends ChangeNotifier {
           'theme': theme,
           'vibrate': vibrate,
           'tap_sound': tapSound,
+          'tap_sound_choice': tapSoundChoice,
           'reminder_enabled': reminderEnabled,
           'reminder_hour': reminderHour,
           'reminder_minute': reminderMinute,
@@ -328,6 +337,8 @@ class AppController extends ChangeNotifier {
       theme = json['theme']?.toString() ?? 'auto';
       vibrate = json['vibrate'] as bool? ?? true;
       tapSound = json['tap_sound'] as bool? ?? true;
+      final savedSound = json['tap_sound_choice']?.toString() ?? 'soft_click';
+      tapSoundChoice = tapSoundChoices.contains(savedSound) ? savedSound : 'soft_click';
       reminderEnabled = json['reminder_enabled'] as bool? ?? false;
       reminderHour = (json['reminder_hour'] as num?)?.toInt() ?? 7;
       reminderMinute = (json['reminder_minute'] as num?)?.toInt() ?? 0;
@@ -360,6 +371,7 @@ class AppController extends ChangeNotifier {
           'theme': theme,
           'vibrate': vibrate,
           'tap_sound': tapSound,
+          'tap_sound_choice': tapSoundChoice,
           'reminder_enabled': reminderEnabled,
           'reminder_hour': reminderHour,
           'reminder_minute': reminderMinute,

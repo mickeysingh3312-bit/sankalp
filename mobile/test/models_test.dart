@@ -64,4 +64,20 @@ void main() {
     expect(controller.writeCount, 0);
     controller.dispose();
   });
+
+  test('tap sound choice is validated and stored in memory', () async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = AppController(
+      notifications: NotificationService(),
+      purchases: PurchaseService(),
+    );
+    await controller.initialize();
+
+    controller.setTapSoundChoice('temple_bell');
+    expect(controller.tapSoundChoice, 'temple_bell');
+
+    controller.setTapSoundChoice('unknown_sound');
+    expect(controller.tapSoundChoice, 'temple_bell');
+    controller.dispose();
+  });
 }
