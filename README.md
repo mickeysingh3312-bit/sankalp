@@ -1,6 +1,6 @@
-# Sankalp Naam Jap
+# Naam Jap
 
-Sankalp is a Flutter Android app with a PHP and MySQL backend. It preserves the
+Naam Jap is a Flutter Android app with a PHP and MySQL backend. It preserves the
 provided saffron design, works offline for daily counting, synchronizes progress
 after sign in, and uses Google Play Billing for the ₹21 monthly Premium plan.
 

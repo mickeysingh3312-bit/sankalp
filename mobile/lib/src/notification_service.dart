@@ -41,13 +41,13 @@ class NotificationService {
     if (!next.isAfter(now)) next = next.add(const Duration(days: 1));
     await _plugin.zonedSchedule(
       id: 108,
-      title: '🪔 Your Sankalp is waiting',
+      title: '🪔 Your Naam Jap is waiting',
       body: "Take a moment for today's Naam Jap 🙏",
       scheduledDate: next,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'daily_sankalp',
-          'Daily Sankalp reminder',
+          'Daily Naam Jap reminder',
           channelDescription: 'A daily reminder for your selected Naam Jap time.',
           importance: Importance.defaultImportance,
         ),

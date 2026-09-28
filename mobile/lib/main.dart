@@ -93,7 +93,7 @@ class _SankalpBootstrapState extends State<SankalpBootstrap> {
                         SizedBox(height: 18),
                         CircularProgressIndicator(color: saffron),
                         SizedBox(height: 18),
-                        Text('Preparing your Sankalp…'),
+                        Text('Preparing Naam Jap…'),
                       ],
                     )
                   : Column(
@@ -102,7 +102,7 @@ class _SankalpBootstrapState extends State<SankalpBootstrap> {
                         const Text('ॐ', style: TextStyle(fontSize: 54, color: saffron)),
                         const SizedBox(height: 18),
                         const Text(
-                          'Sankalp could not finish starting.',
+                          'Naam Jap could not finish starting.',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
@@ -139,7 +139,7 @@ class SankalpApp extends StatelessWidget {
       listenable: controller,
       builder: (context, _) {
         return MaterialApp(
-          title: 'Sankalp',
+          title: 'Naam Jap',
           debugShowCheckedModeBanner: false,
           themeMode: controller.themeMode,
           theme: _theme(Brightness.light),

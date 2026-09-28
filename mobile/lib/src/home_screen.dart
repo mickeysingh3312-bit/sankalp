@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Sankalp'),
+        title: const Text('Naam Jap'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -616,7 +616,7 @@ class _HomeScreenState extends State<HomeScreen> {
             '${NumberFormat.decimalPattern().format(controller.goal)} Naam today\n'
             '🔥 ${controller.streak} day streak · '
             '📿 ${controller.completedMalas} malas\n'
-            'Completed with श्रद्धा using Sankalp.',
+            'Completed with श्रद्धा using Naam Jap.',
       ),
     );
   }

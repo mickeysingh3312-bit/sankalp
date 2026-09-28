@@ -38,7 +38,7 @@ void main() {
 
     await tester.pumpWidget(SankalpApp(controller: controller));
 
-    expect(find.text('Sankalp'), findsOneWidget);
+    expect(find.text('Naam Jap'), findsOneWidget);
     expect(find.text("Choose today's Sankalp"), findsOneWidget);
     expect(find.byType(Scaffold), findsOneWidget);
   });

@@ -177,7 +177,7 @@ try {
         $payload = $google->verifySubscription($purchaseToken);
         $lineProducts = array_column($payload['lineItems'] ?? [], 'productId');
         if (!in_array($expectedProduct, $lineProducts, true)) {
-            Response::error('The purchase does not match Sankalp Premium.', 422);
+            Response::error('The purchase does not match Naam Jap Premium.', 422);
         }
         $expiry = GooglePlay::premiumExpiry($payload);
         $status = (string) ($payload['subscriptionState'] ?? 'UNKNOWN');

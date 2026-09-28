@@ -12,7 +12,7 @@ class PremiumScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final price = controller.purchases.product?.price ?? '₹21/month';
     return Scaffold(
-      appBar: AppBar(title: const Text('Sankalp Premium')),
+      appBar: AppBar(title: const Text('Naam Jap Premium')),
       body: ListenableBuilder(
         listenable: controller,
         builder: (context, _) => ListView(
@@ -99,4 +99,3 @@ class PremiumScreen extends StatelessWidget {
     );
   }
 }
-

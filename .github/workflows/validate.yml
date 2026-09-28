@@ -34,10 +34,15 @@ jobs:
         run: >-
           flutter build apk --release
           --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }}
+      - name: Name APK
+        run: |
+          app_version="$(awk '/^version:/{print $2}' mobile/pubspec.yaml | cut -d+ -f1)"
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk \
+            "mobile/build/app/outputs/flutter-apk/Naam-Jap-${app_version}.apk"
       - uses: actions/upload-artifact@v4
         with:
-          name: sankalp-test-apk
-          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          name: naam-jap-test-apk
+          path: mobile/build/app/outputs/flutter-apk/Naam-Jap-*.apk
           retention-days: 14
 
   php:

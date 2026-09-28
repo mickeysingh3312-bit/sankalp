@@ -42,7 +42,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     final controller = widget.controller;
     return Scaffold(
-      appBar: AppBar(title: const Text('Sankalp account')),
+      appBar: AppBar(title: const Text('Naam Jap account')),
       body: ListenableBuilder(
         listenable: controller,
         builder: (context, _) {
@@ -53,7 +53,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 const Icon(Icons.account_circle, size: 72),
                 const SizedBox(height: 12),
                 Text(
-                  controller.userName ?? 'Sankalp user',
+                  controller.userName ?? 'Naam Jap user',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
@@ -158,4 +158,3 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 }
-

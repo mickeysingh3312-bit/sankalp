@@ -20,7 +20,7 @@ if (
     !hash_equals((string) Env::get('ADMIN_USERNAME', 'admin'), $username) ||
     !hash_equals($configuredPassword, $password)
 ) {
-    header('WWW-Authenticate: Basic realm="Sankalp Admin"');
+    header('WWW-Authenticate: Basic realm="Naam Jap Admin"');
     http_response_code(401);
     exit('Authentication required.');
 }
@@ -54,7 +54,7 @@ $users = $db->query(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sankalp Admin</title>
+  <title>Naam Jap Admin</title>
   <style>
     body{margin:0;background:#fff8ee;color:#3a2b1d;font:15px system-ui,sans-serif}
     main{max-width:1100px;margin:auto;padding:28px 18px}
@@ -66,7 +66,7 @@ $users = $db->query(
   </style>
 </head>
 <body><main>
-  <h1>ॐ Sankalp Admin</h1>
+  <h1>ॐ Naam Jap Admin</h1>
   <div class="cards">
     <?php foreach ($metrics as $label => $value): ?>
       <div class="card"><div class="value"><?= number_format($value) ?></div><div><?= htmlspecialchars($label) ?></div></div>
